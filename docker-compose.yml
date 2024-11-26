@@ -1,6 +1,7 @@
 services:
   nginx:
     image: nginx:latest
+    container_name: virtualbookstore_nginx
     ports:
       - "80:80"
     volumes:
@@ -11,7 +12,7 @@ services:
       api:
         condition: service_healthy
   api:
-    container_name: api
+    container_name: virtualbookstore_api
     image: thiagochfc/virtualbookstore:1.0
     build:
       context: .
