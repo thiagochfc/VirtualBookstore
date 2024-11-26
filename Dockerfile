@@ -8,7 +8,7 @@ COPY /src ./src
 
 RUN dotnet restore VirtualBookstore.sln
 
-RUN dotnet publish -c Release -o out
+RUN dotnet publish -c Release -o out --no-restore
 
 FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS runtime
 

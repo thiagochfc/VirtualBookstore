@@ -11,6 +11,22 @@ services:
     depends_on:
       api:
         condition: service_healthy
+    
+  postgres:
+    image: postgres:17.2-alpine3.20
+    container_name: virtualbookstore_postgresql
+    user: root
+    environment:
+      - POSTGRES_PASSWORD=virtualbookstore_password
+      - POSTGRES_USER=virtualbookstore_user
+      - POSTGRES_DB=virtualbookstore
+    expose:
+      - 5432
+    ports:
+      - "5432:5432"
+    networks:
+      - virtualbookstore_network
+    
   api:
     container_name: virtualbookstore_api
     image: thiagochfc/virtualbookstore:1.0
@@ -21,6 +37,8 @@ services:
       - 8080
     networks:
       - virtualbookstore_network
+    depends_on:
+      - postgres
     healthcheck:
       test: wget --no-verbose --tries=1 http://localhost:8080/health || exit 1
       interval: 30s
