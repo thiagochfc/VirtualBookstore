@@ -9,11 +9,11 @@ public class Book
     public string Resume { get; private set; }
     public string Summary { get; private set; }
     public decimal Price { get; private set; }
-    public uint NumberOfPages { get; set; }
-    public string Isbn { get; set; }
-    public DateOnly Release { get; set; }
-    public Guid IdCategory { get; set; }
-    public Guid IdAuthor { get; set; }
+    public uint NumberOfPages { get; private set; }
+    public string Isbn { get; private set; }
+    public DateOnly Release { get; private set; }
+    public Guid IdCategory { get; private set; }
+    public Guid IdAuthor { get; private set; }
     public static ushort ResumeMaxLength => 500;
     public static decimal MinimumPriceRequired => 20.00m;
     public static sbyte MinimumNumberOfPages => 100;
