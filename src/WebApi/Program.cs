@@ -1,6 +1,9 @@
-using VirtualBookstore.WebApi;
+using Microsoft.EntityFrameworkCore;
+
 using VirtualBookstore.WebApi.Authors;
 using VirtualBookstore.WebApi.Commons.Extensions;
+using VirtualBookstore.WebApi.Data;
+using VirtualBookstore.WebApi.Data.Stores;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
@@ -9,15 +12,24 @@ WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 builder.AddDocumentation();
 builder.AddProblemDetails();
 builder.AddValidation();
+builder.AddNpgsqlDbContext<AppDbContext>("virtualbookstore");
+builder.Services.AddScoped<IAuthorStore, AuthorStore>();
 
-builder.Services.AddSingleton<IAuthorStore, AuthorStore>();
+builder.AddServiceDefaults();
 
 WebApplication app = builder.Build();
+
+app.MapDefaultEndpoints();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.ConfigureDevelopment();
+
+    await using var scope = app.Services.CreateAsyncScope();
+    var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    var strategy = context.Database.CreateExecutionStrategy();
+    await strategy.ExecuteAsync(() => context.Database.MigrateAsync());
 }
 
 app.UseProblemDetails();

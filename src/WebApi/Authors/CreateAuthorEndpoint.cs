@@ -23,7 +23,9 @@ internal class CreateAuthorEndpoint : IEndpoint
             .WithSummary("Create a new author")
             .WithSummary("Create a new author in the system")
             .Accepts<CreateAuthorRequest>(Endpoint.JsonContentType)
+            .Produces(StatusCodes.Status201Created)
             .Produces<ValidationProblemDetails>(StatusCodes.Status400BadRequest)
+            .Produces<ValidationProblemDetails>(StatusCodes.Status500InternalServerError)
             .AddFluentValidationAutoValidation()
             .WithOpenApi();
     }
@@ -40,6 +42,6 @@ internal class CreateAuthorEndpoint : IEndpoint
 
         await authorStore.CreateAsync(request.ToAuthor(), cancellationToken);
 
-        return TypedResults.Ok();
+        return TypedResults.Created();
     }
 }
