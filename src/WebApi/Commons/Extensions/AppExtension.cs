@@ -20,4 +20,18 @@ internal static class AppExtension
         app.UseExceptionHandler();
         app.UseStatusCodePages();
     }
+
+    internal static void MapEndpoints(this IEndpointRouteBuilder app)
+    {
+        var endpoints = typeof(Program).Assembly
+            .GetTypes()
+            .Where(t => t.IsAssignableTo(typeof(IEndpoint)) && !t.IsInterface)
+            .Select(Activator.CreateInstance)
+            .Cast<IEndpoint>();
+
+        foreach (var endpoint in endpoints)
+        {
+            endpoint.MapEndpoint(app);
+        }
+    }
 }
